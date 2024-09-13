@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from django.apps import AppConfig
 
 

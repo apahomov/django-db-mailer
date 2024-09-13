@@ -3,7 +3,7 @@
 import os
 
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from django.shortcuts import redirect, render
 
 try:

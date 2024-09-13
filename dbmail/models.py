@@ -7,7 +7,7 @@ import os
 import re
 
 from django.core import signing
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from django.utils.html import strip_tags
 from django.utils.timezone import now
 from django.core.cache import cache
