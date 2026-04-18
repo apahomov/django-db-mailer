@@ -616,7 +616,7 @@ class SignalDeferredDispatch(models.Model):
         )
 
     class Meta:
-        indexes = [models.Index(fields=['eta', 'done'])]
+        indexes = [models.Index(fields=['eta', 'done'], name='dbmail_sign_eta_bd53d1_idx')]
 
 
 
