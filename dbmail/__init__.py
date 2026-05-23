@@ -143,7 +143,20 @@ def initial_signals():
         try:
             from dbmail.signals import initial_signals as init_signals
 
-            init_signals()
+            # Under ASGI/uvicorn, AppConfig.ready() runs inside an event loop.
+            # Django's @async_unsafe blocks sync ORM calls there. Run the
+            # initializer in a worker thread that has no running loop so the
+            # check passes; we still join so signal handlers are attached
+            # before the first request is served.
+            import asyncio
+            import threading
+            try:
+                asyncio.get_running_loop()
+                thread = threading.Thread(target=init_signals, daemon=True)
+                thread.start()
+                thread.join()
+            except RuntimeError:
+                init_signals()
         except (ImportError, DatabaseError, IntegrityError):
             pass
 
