@@ -736,12 +736,21 @@ class MailLogTrack(models.Model):
                 from django.contrib.gis.geoip import GeoIP
                 from django.contrib.gis.geoip import GeoIPException
 
+            # Django 5.x + geoip2 raise geoip2.errors.AddressNotFoundError
+            # (NOT a subclass of GeoIP2Exception) for IPs missing from the DB,
+            # e.g. 127.0.0.1 on internal/proxy traffic to the read-tracker.
+            # Catch it too so geo enrichment stays best-effort and never 500s.
+            try:
+                from geoip2.errors import AddressNotFoundError
+            except ImportError:
+                AddressNotFoundError = ()
+
             try:
                 g = GeoIP()
                 info = g.city(self.ip) or dict()
                 for (k, v) in info.items():
                     setattr(self, 'ip_%s' % k, v)
-            except GeoIPException:
+            except (GeoIPException, AddressNotFoundError):
                 pass
 
     def detect_open(self):
